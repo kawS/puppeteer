@@ -1,0 +1,9 @@
+{
+  "name": "userinfo",
+  "dependencies": {
+    "crypto-js": "^4.2.0"
+  },
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

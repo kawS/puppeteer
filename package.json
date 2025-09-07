@@ -1,0 +1,10 @@
+{
+	"scripts": {
+		"start1": "node testTournaments.js",
+		"start2": "node testMetagame.js"
+	},
+	"dependencies": {
+		"ant-design-vue": "^4.2.6",
+		"puppeteer": "^24.18.0"
+	}
+}

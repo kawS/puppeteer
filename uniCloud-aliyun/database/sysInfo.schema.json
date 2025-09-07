@@ -1,0 +1,1 @@
+{"bsonType":"object","required":[],"permission":{"read":true,"create":false,"update":true,"delete":false},"properties":{"_id":{"description":"ID，系统自动生成"},"isUpdate":{"description":"是否升级完毕"},"isCheck":{"description":"是否审核完毕"},"newDate":{"description":"新卡包发售日期"},"ruleData":{"description":"环境标"}}}

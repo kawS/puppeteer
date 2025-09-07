@@ -1,0 +1,1 @@
+{"bsonType":"object","required":["name"],"permission":{"read":true,"create":true,"update":true,"delete":true},"properties":{"_id":{"description":"ID，系统自动生成"},"name":{"description":"卡组名"},"list":{"description":"卡组"},"logo":{"description":"卡组图标"},"tlt":{"description":"卡组简介"},"hot":{"description":"点击数"},"listImg":{"description":"卡表图"}}}
