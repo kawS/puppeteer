@@ -79,7 +79,7 @@ const delay = time => {
 					const a = td.querySelector('.deck-price-paper > a');
 					obj.decks.push({
 						name: a.innerText.trim(),
-						url: a.href.replace('#paper', '#online'),
+						url: a.href,
 						mana: td.querySelector('.manacost').getAttribute('aria-label').replace('mana cost: ', '').replaceAll(' ', '|'),
 						det: []
 					});
@@ -107,7 +107,7 @@ const delay = time => {
 						visible: true
 					});
 					console.log(`--- decks: ${j}/${maxDeck}, ${deck.name}`);
-					await delay(1000);
+					await delay(500);
 					j += 1;
 					const det = await newPage.$eval('.deck-view-deck-table', tb => {
 						const trs = tb.querySelectorAll('tr');
@@ -124,13 +124,14 @@ const delay = time => {
 								const count = tds[0].innerText.trim();
 								const a = tds[1].querySelector('a');
 								decks.push({
-									name: a.innerText.trim(),
-									set:
-										a
-											.getAttribute('data-card-id')
-											.match(/\[([A-Z])+\]/g)?.[0]
-											?.replace(/\[|\]/g, '')
-											.replace(/\[|\]/g, '') ?? '',
+									name: a ? a.innerText.trim() : tds[1].innerText.trim(),
+									set: a
+										? a
+												.getAttribute('data-card-id')
+												.match(/\[([A-Z])+\]/g)?.[0]
+												?.replace(/\[|\]/g, '')
+												.replace(/\[|\]/g, '') ?? ''
+										: '',
 									count,
 									category
 								});

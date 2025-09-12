@@ -64,7 +64,7 @@ const delay = time => {
 				const a = item.querySelector('.deck-price-paper > a');
 				const obj = {
 					name: a.innerText.trim(),
-					url: a.href.replace('#paper', '#online'),
+					url: a.href.replace('#paper', '#arena'),
 					type: 'Metagame',
 					mana: item.querySelector('.manacost').getAttribute('aria-label').replace('colors:', '').trim().replaceAll(' ', '|'),
 					deck: []
@@ -88,7 +88,7 @@ const delay = time => {
 				await newPage.waitForSelector('.deck-view-deck-table', {
 					visible: true
 				});
-				await delay(1000);
+				await delay(500);
 				const det = await newPage.$eval('.deck-view-deck-table', tb => {
 					const trs = tb.querySelectorAll('tr');
 					const deck = [];
@@ -104,13 +104,14 @@ const delay = time => {
 							const count = tds[0].innerText.trim();
 							const a = tds[1].querySelector('a');
 							deck.push({
-								name: a.innerText.trim(),
-								set:
-									a
-										.getAttribute('data-card-id')
-										.match(/\[([A-Z])+\]/g)?.[0]
-										?.replace(/\[|\]/g, '')
-										.replace(/\[|\]/g, '') ?? '',
+								name: a ? a.innerText.trim() : tds[1].innerText.trim(),
+								set: a
+									? a
+											.getAttribute('data-card-id')
+											.match(/\[([A-Z])+\]/g)?.[0]
+											?.replace(/\[|\]/g, '')
+											.replace(/\[|\]/g, '') ?? ''
+									: '',
 								count,
 								category
 							});
