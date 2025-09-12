@@ -23,7 +23,7 @@
 				</div>
 			</unicloud-db>
 		</div>
-		<a-button @click="setNew">set new deck list</a-button>
+		<a-button @click="setNew(sVal)">set new deck list</a-button>
 	</div>
 </template>
 
@@ -58,8 +58,8 @@
 		return `<i class="ms ms-ci ms-ci-${slist.length} ms-ci-${result}"></i>`;
 	};
 
-	const setNew = () => {
-		import('../../json/demo.json')
+	const setNew = type => {
+		import(`../../json/demo${type}.json`)
 			.then(async module => {
 				console.log('Loaded demo.js:', module.result);
 

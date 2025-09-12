@@ -1,6 +1,22 @@
 const puppeteer = require('puppeteer');
-const puppeteerCore = require('puppeteer-core');
+// const puppeteerCore = require('puppeteer-core');
+const nodemailer = require('nodemailer');
 const fs = require('fs');
+
+const transporter = nodemailer.createTransport({
+	host: 'mail.sohu.com',
+	port: 465,
+	auth: {
+		user: 'sacg@sohu.com',
+		pass: 'Y23MEXKIDAOLH'
+	}
+});
+
+const delay = time => {
+	return new Promise(resolve => {
+		setTimeout(resolve, time);
+	});
+};
 
 (async () => {
 	async function createPageWithInterception(browser, blockType = ['image', 'font', 'media', 'stylesheet', 'script']) {
@@ -63,7 +79,7 @@ const fs = require('fs');
 					const a = td.querySelector('.deck-price-paper > a');
 					obj.decks.push({
 						name: a.innerText.trim(),
-						url: a.href,
+						url: a.href.replace('#paper', '#online'),
 						mana: td.querySelector('.manacost').getAttribute('aria-label').replace('mana cost: ', '').replaceAll(' ', '|'),
 						det: []
 					});
@@ -75,7 +91,8 @@ const fs = require('fs');
 		});
 		const listLength = _array.length;
 		await page.close();
-		const tempArr = _array//.splice(0, 3);
+		const cusLength = 0;
+		const tempArr = cusLength === 0 ? _array : _array.splice(0, cusLength);
 		console.log(`- load table ${listLength}(${tempArr.length}) done`);
 		let x = 1;
 		for (let date of tempArr) {
@@ -90,6 +107,7 @@ const fs = require('fs');
 						visible: true
 					});
 					console.log(`--- decks: ${j}/${maxDeck}, ${deck.name}`);
+					await delay(1000);
 					j += 1;
 					const det = await newPage.$eval('.deck-view-deck-table', tb => {
 						const trs = tb.querySelectorAll('tr');
@@ -107,6 +125,12 @@ const fs = require('fs');
 								const a = tds[1].querySelector('a');
 								decks.push({
 									name: a.innerText.trim(),
+									set:
+										a
+											.getAttribute('data-card-id')
+											.match(/\[([A-Z])+\]/g)?.[0]
+											?.replace(/\[|\]/g, '')
+											.replace(/\[|\]/g, '') ?? '',
 									count,
 									category
 								});
@@ -124,11 +148,25 @@ const fs = require('fs');
 			}
 			x += 1;
 		}
-		fs.writeFile('./json/demo.json', JSON.stringify({ result: tempArr }), err => {
+		fs.writeFile('./json/demoTournaments.json', JSON.stringify({ result: tempArr }), err => {
 			if (err) throw err;
-			console.log(`The file has been saved ${tempArr.length}!`);
+			console.log('The file has been saved!');
 		});
 		await browser.close();
+
+		// const info = await transporter.sendMail({
+		// 	from: 'sacg@sohu.com',
+		// 	to: 'sacg@sohu.com',
+		// 	subject: 'jsonData',
+		// 	html: '<b>Hello world?</b>',
+		// 	attachments: [
+		// 		{
+		// 			filename: 'demoTournaments.json',
+		// 			path: './json/demoTournaments.json'
+		// 		}
+		// 	]
+		// });
+		// console.log('Message sent:', info.messageId);
 	} catch (error) {
 		console.error('# main:', error.message);
 	}

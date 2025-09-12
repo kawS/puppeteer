@@ -1,6 +1,22 @@
 const puppeteer = require('puppeteer');
-const puppeteerCore = require('puppeteer-core');
+// const puppeteerCore = require('puppeteer-core');
+const nodemailer = require('nodemailer');
 const fs = require('fs');
+
+const transporter = nodemailer.createTransport({
+	host: 'mail.sohu.com',
+	port: 465,
+	auth: {
+		user: 'sacg@sohu.com',
+		pass: 'Y23MEXKIDAOLH'
+	}
+});
+
+const delay = time => {
+	return new Promise(resolve => {
+		setTimeout(resolve, time);
+	});
+};
 
 (async () => {
 	async function createPageWithInterception(browser, blockType = ['image', 'font', 'media', 'stylesheet', 'script']) {
@@ -30,7 +46,7 @@ const fs = require('fs');
 		});
 		const page = await createPageWithInterception(browser);
 		try {
-			await page.goto('https://www.mtggoldfish.com/metagame/standard/full#paper');
+			await page.goto('https://www.mtggoldfish.com/metagame/standard/full#arena');
 		} catch (error) {
 			console.error('# browser:', error.message);
 			await browser.close();
@@ -48,7 +64,7 @@ const fs = require('fs');
 				const a = item.querySelector('.deck-price-paper > a');
 				const obj = {
 					name: a.innerText.trim(),
-					url: a.href,
+					url: a.href.replace('#paper', '#online'),
 					type: 'Metagame',
 					mana: item.querySelector('.manacost').getAttribute('aria-label').replace('colors:', '').trim().replaceAll(' ', '|'),
 					deck: []
@@ -60,7 +76,8 @@ const fs = require('fs');
 		});
 		const listLength = _array.length;
 		await page.close();
-		const tempArr = _array//.splice(0, 10);
+		const cusLength = 0;
+		const tempArr = cusLength === 0 ? _array : _array.splice(0, cusLength);
 		console.log(`- load table ${listLength}(${tempArr.length}) done`);
 		let x = 1;
 		for (let item of tempArr) {
@@ -71,6 +88,7 @@ const fs = require('fs');
 				await newPage.waitForSelector('.deck-view-deck-table', {
 					visible: true
 				});
+				await delay(1000);
 				const det = await newPage.$eval('.deck-view-deck-table', tb => {
 					const trs = tb.querySelectorAll('tr');
 					const deck = [];
@@ -87,6 +105,12 @@ const fs = require('fs');
 							const a = tds[1].querySelector('a');
 							deck.push({
 								name: a.innerText.trim(),
+								set:
+									a
+										.getAttribute('data-card-id')
+										.match(/\[([A-Z])+\]/g)?.[0]
+										?.replace(/\[|\]/g, '')
+										.replace(/\[|\]/g, '') ?? '',
 								count,
 								category
 							});
@@ -103,11 +127,25 @@ const fs = require('fs');
 			}
 			x += 1;
 		}
-		fs.writeFile('./json/demo.json', JSON.stringify({ result: tempArr }), err => {
+		fs.writeFile('./json/demoMetagame.json', JSON.stringify({ result: tempArr }), err => {
 			if (err) throw err;
-			console.log(`The file has been saved ${tempArr.length}!`);
+			console.log('The file has been saved!');
 		});
 		await browser.close();
+
+		// const info = await transporter.sendMail({
+		// 	from: 'sacg@sohu.com',
+		// 	to: 'sacg@sohu.com',
+		// 	subject: 'jsonData',
+		// 	html: '<b>Hello world?</b>',
+		// 	attachments: [
+		// 		{
+		// 			filename: 'demoMetagame.json',
+		// 			path: './json/demoMetagame.json'
+		// 		}
+		// 	]
+		// });
+		// console.log('Message sent:', info.messageId);
 	} catch (error) {
 		console.error('# main:', error.message);
 	}

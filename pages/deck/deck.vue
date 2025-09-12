@@ -125,10 +125,10 @@
 				console.error(err);
 			});
 	};
-	const goIndex = (type) => {
+	const goIndex = type => {
 		selIndex.value = selIndex.value + type;
-		getDet(data.value[selIndex.value].name, selIndex.value)
-	}
+		getDet(data.value[selIndex.value].name, selIndex.value);
+	};
 </script>
 
 <style lang="scss" scoped>
@@ -148,7 +148,7 @@
 			}
 		}
 	}
-	.mb1{
+	.mb1 {
 		margin-bottom: 1em;
 	}
 	.mb1f {
