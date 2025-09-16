@@ -1,8 +1,8 @@
 {
 	"scripts": {
-		"start1": "node testTournaments.js",
-		"start2": "node testMetagame.js",
-		"start3": "node testEmail.js"
+		"testTournaments": "node testTournaments.js",
+		"testMetagame": "node testMetagame.js",
+		"testEmail": "node testEmail.js"
 	},
 	"dependencies": {
 		"ant-design-vue": "^4.2.6",
