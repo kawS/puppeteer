@@ -79,7 +79,7 @@ const delay = time => {
 					const a = td.querySelector('.deck-price-paper > a');
 					obj.decks.push({
 						name: a.innerText.trim(),
-						url: a.href,
+						url: a.href.replace('#paper', '#arena'),
 						mana: td.querySelector('.manacost').getAttribute('aria-label').replace('mana cost: ', '').replaceAll(' ', '|'),
 						det: []
 					});
