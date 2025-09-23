@@ -2,6 +2,9 @@ const puppeteer = require('puppeteer');
 // const puppeteerCore = require('puppeteer-core');
 const nodemailer = require('nodemailer');
 const fs = require('fs');
+const fdc = require('chrome-finder');
+
+const chromePath = fdc();
 
 const transporter = nodemailer.createTransport({
 	host: 'mail.sohu.com',
@@ -37,7 +40,7 @@ const delay = time => {
 
 	try {
 		const browser = await puppeteer.launch({
-			// executablePath: 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+			executablePath: chromePath
 			// defaultViewport: {
 			// 	width: 390,
 			// 	height: 844
@@ -125,13 +128,7 @@ const delay = time => {
 								const a = tds[1].querySelector('a');
 								decks.push({
 									name: a ? a.innerText.trim() : tds[1].innerText.trim(),
-									set: a
-										? a
-												.getAttribute('data-card-id')
-												.match(/\[([A-Z])+\]/g)?.[0]
-												?.replace(/\[|\]/g, '')
-												.replace(/\[|\]/g, '') ?? ''
-										: '',
+									set: '',
 									count,
 									category
 								});

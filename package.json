@@ -6,7 +6,8 @@
 	},
 	"dependencies": {
 		"ant-design-vue": "^4.2.6",
+		"chrome-finder": "^1.0.7",
 		"nodemailer": "^7.0.6",
-		"puppeteer": "^24.18.0"
+		"puppeteer": "^24.22.0"
 	}
 }
