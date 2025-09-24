@@ -23,7 +23,15 @@
 				</div>
 			</unicloud-db>
 		</div>
-		<a-button @click="setNew(sVal)">set new deck list</a-button>
+		<div v-show="sVal === 'Search'">
+			<a-input v-model:value="searchInp" placeholder="name" />
+			<br />
+			<br />
+			<a-button @click="getSearch">getDet</a-button>
+			<a-button @click="saveSearch">saveDet</a-button>
+			{{ searchData?.[0].display_name }}
+		</div>
+		<a-button @click="setNew(sVal)" v-if="sVal !== 'Search'">set new deck list</a-button>
 	</div>
 </template>
 
@@ -31,12 +39,16 @@
 	import { onShow } from '@dcloudio/uni-app';
 	import { Modal, message } from 'ant-design-vue';
 	import { ref } from 'vue';
-	import { colors } from '@/dict/comm.js';
+	import { colors, setList } from '@/dict/comm.js';
 
+	// 云对象
+	const cloudObj = uniCloud.importObject('cuntils');
 	const db = uniCloud.databaseForJQL();
 	const dbCmd = db.command;
-	const types = ref(['Tournaments', 'Metagame']);
+	const types = ref(['Tournaments', 'Metagame', 'Search']);
 	const sVal = ref(types.value[0]);
+	const searchInp = ref('');
+	const searchData = ref(null);
 
 	onShow(options => {
 		uni.removeStorageSync('mtgDeck');
@@ -86,6 +98,35 @@
 
 	const changeType = val => {
 		console.log(val);
+	};
+	const getSearch = async () => {
+		const set = setList.map(item => item.label);
+		const res = await cloudObj.getDeckDet(searchInp.value, 'illustration_id');
+		const result = res.data.items.filter(item => {
+			if (item.display_name_zh == searchInp.value || item.display_name == searchInp.value) {
+				if (set.includes(item.set)) {
+					return true;
+				}
+			}
+		});
+		searchData.value = result;
+	};
+	const saveSearch = async () => {
+		const baseData = searchData.value[0];
+		baseData.other_faces = searchData.value.slice(1);
+		db.collection('mtgCards')
+			.add(baseData)
+			.then(res => {
+				if (res.errCode === 0) {
+					message.success(`新增${searchData.value}成功`);
+					location.reload();
+				} else {
+					console.error(res.errMsg);
+				}
+			})
+			.catch(err => {
+				console.error(err);
+			});
 	};
 </script>
 

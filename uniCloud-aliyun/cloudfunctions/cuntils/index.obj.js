@@ -282,8 +282,8 @@ module.exports = {
 		return Array.from(_set);
 	},
 	// 大学院废墟查卡
-	async getDeckDet(params) {
-		const res = await uniCloud.httpclient.request(`https://mtgch.com/api/v1/result?q=${params}&page=1&page_size=100&order=-released_at&unique=id&priority_chinese=true&view=1`, {
+	async getDeckDet(params, unique = 'id') {
+		const res = await uniCloud.httpclient.request(`https://mtgch.com/api/v1/result?q=${params}&page=1&page_size=100&order=-released_at&unique=${unique}&priority_chinese=true&view=1`, {
 			method: 'GET',
 			dataType: 'json'
 		});
