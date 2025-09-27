@@ -118,8 +118,7 @@
 			.add(baseData)
 			.then(res => {
 				if (res.errCode === 0) {
-					message.success(`新增${searchData.value}成功`);
-					location.reload();
+					message.success(`新增${searchInp.value}成功`);
 				} else {
 					console.error(res.errMsg);
 				}

@@ -108,13 +108,7 @@ const delay = time => {
 							const a = tds[1].querySelector('a');
 							deck.push({
 								name: a ? a.innerText.trim() : tds[1].innerText.trim(),
-								set: a
-									? a
-											.getAttribute('data-card-id')
-											.match(/\[([A-Z])+\]/g)?.[0]
-											?.replace(/\[|\]/g, '')
-											.replace(/\[|\]/g, '') ?? ''
-									: '',
+								set: '',
 								count,
 								category
 							});
