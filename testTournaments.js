@@ -2,9 +2,9 @@ const puppeteer = require('puppeteer');
 // const puppeteerCore = require('puppeteer-core');
 const nodemailer = require('nodemailer');
 const fs = require('fs');
-const fdc = require('chrome-finder');
+// const fdc = require('chrome-finder');
 
-const chromePath = fdc();
+// const chromePath = fdc();
 
 const transporter = nodemailer.createTransport({
 	host: 'mail.sohu.com',
@@ -40,7 +40,7 @@ const delay = time => {
 
 	try {
 		const browser = await puppeteer.launch({
-			executablePath: chromePath
+			// executablePath: chromePath
 			// defaultViewport: {
 			// 	width: 390,
 			// 	height: 844
