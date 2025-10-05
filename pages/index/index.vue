@@ -24,7 +24,12 @@
 			</unicloud-db>
 		</div>
 		<div v-show="sVal === 'Search'">
-			<a-input v-model:value="searchInp" placeholder="name" />
+			<a-input v-model:value="searchInp" placeholder="name" allow-clear />
+			<br />
+			<br />
+			<a-radio-group v-model:value="radVal" size="small" @change="changeRad">
+				<a-radio-button :value="item" v-for="item in ['平原', '海岛', '沼泽', '山脉', '树林', '荒野']" :key="item">{{ item }}</a-radio-button>
+			</a-radio-group>
 			<br />
 			<br />
 			<a-button @click="getSearch">getDet</a-button>
@@ -49,6 +54,7 @@
 	const sVal = ref(types.value[0]);
 	const searchInp = ref('');
 	const searchData = ref(null);
+	const radVal = ref('');
 
 	onShow(options => {
 		uni.removeStorageSync('mtgDeck');
@@ -118,8 +124,7 @@
 			.add(baseData)
 			.then(res => {
 				if (res.errCode === 0) {
-					message.success(`新增${searchData.value}成功`);
-					location.reload();
+					message.success(`新增${searchInp.value}成功`);
 				} else {
 					console.error(res.errMsg);
 				}
@@ -127,6 +132,12 @@
 			.catch(err => {
 				console.error(err);
 			});
+	};
+	const changeRad = e => {
+		const val = e.target.value;
+		if (val != '') {
+			searchInp.value = val;
+		}
 	};
 </script>
 

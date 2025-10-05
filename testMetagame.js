@@ -49,7 +49,7 @@ const delay = time => {
 		});
 		const page = await createPageWithInterception(browser);
 		try {
-			await page.goto('https://www.mtggoldfish.com/metagame/standard/full#arena');
+			await page.goto('https://www.mtggoldfish.com/metagame/standard/full#paper');
 		} catch (error) {
 			console.error('# browser:', error.message);
 			await browser.close();
@@ -62,7 +62,6 @@ const delay = time => {
 		const _array = await page.$eval('#metagame-decks-container', el => {
 			const divList = el.querySelectorAll('.archetype-tile');
 			const strList = [];
-			let i = 0;
 			for (let item of divList) {
 				const a = item.querySelector('.deck-price-paper > a');
 				const obj = {
@@ -73,7 +72,6 @@ const delay = time => {
 					deck: []
 				};
 				strList.push(obj);
-				i++;
 			}
 			return strList;
 		});
