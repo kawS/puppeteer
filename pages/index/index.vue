@@ -16,7 +16,7 @@
 			</unicloud-db>
 		</div>
 		<div v-show="sVal === 'Metagame'">
-			<unicloud-db v-slot:default="{ data }" collection="mtgDeck" where="type=='Metagame'">
+			<unicloud-db v-slot:default="{ data }" :page-size="100" collection="mtgDeck" where="type=='Metagame'">
 				<div class="wrap" v-for="item in data" :key="item.url">
 					<a-button type="text" @click="goDet(item.deck)">{{ item.name }}</a-button>
 					<div class="mana" v-html="returnHtml(item.mana)"></div>
@@ -28,13 +28,17 @@
 			<br />
 			<br />
 			<a-radio-group v-model:value="radVal" size="small" @change="changeRad">
-				<a-radio-button :value="item" v-for="item in ['平原', '海岛', '沼泽', '山脉', '树林', '荒野']" :key="item">{{ item }}</a-radio-button>
+				<a-radio-button :value="item" v-for="item in landsZHS" :key="item">{{ item }}</a-radio-button>
 			</a-radio-group>
 			<br />
 			<br />
 			<a-button @click="getSearch">getDet</a-button>
 			<a-button @click="saveSearch">saveDet</a-button>
-			{{ searchData?.[0].display_name }}
+			<a-row>
+				<a-col span="24">
+					<div class="rr" v-for="item in searchData">{{ item?.display_name }}</div>
+				</a-col>
+			</a-row>
 		</div>
 		<a-button @click="setNew(sVal)" v-if="sVal !== 'Search'">set new deck list</a-button>
 	</div>
@@ -44,7 +48,7 @@
 	import { onShow } from '@dcloudio/uni-app';
 	import { Modal, message } from 'ant-design-vue';
 	import { ref } from 'vue';
-	import { colors, setList } from '@/dict/comm.js';
+	import { colors, setList, landsZHS } from '@/dict/comm.js';
 
 	// 云对象
 	const cloudObj = uniCloud.importObject('cuntils');
@@ -109,10 +113,8 @@
 		const set = setList.map(item => item.label);
 		const res = await cloudObj.getDeckDet(searchInp.value, 'illustration_id');
 		const result = res.data.items.filter(item => {
-			if (item.display_name_zh == searchInp.value || item.display_name == searchInp.value) {
-				if (set.includes(item.set)) {
-					return true;
-				}
+			if (set.includes(item.set) && item.display_name_zh == searchInp.value) {
+				return true;
 			}
 		});
 		searchData.value = result;
@@ -148,6 +150,9 @@
 		.tlt {
 			font-size: 30rpx;
 			font-weight: 700;
+		}
+		.rr {
+			margin-top: 20rpx;
 		}
 	}
 

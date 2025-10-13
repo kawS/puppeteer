@@ -130,7 +130,8 @@ const delay = time => {
 									name: a ? a.innerText.trim() : tds[1].innerText.trim(),
 									set: '',
 									count,
-									category
+									category,
+									art: ''
 								});
 							}
 						});
